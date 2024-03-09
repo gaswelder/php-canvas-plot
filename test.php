@@ -70,6 +70,7 @@ test('functions', function () {
 });
 
 test('histograms', function () {
+	srand(0);
 	$n = 1000;
 	$data = [];
 	for ($i = 0; $i < $n; $i++) {
