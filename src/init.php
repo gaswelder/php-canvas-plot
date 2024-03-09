@@ -4,6 +4,7 @@ namespace gaswelder\plot;
 
 require_once __DIR__ . "/Coordinate.php";
 require_once __DIR__ . "/primitives.php";
+require __DIR__ . "/../php-canvas/canvas.php";
 
 spl_autoload_register(function ($className) {
     $prefix = "gaswelder\\plot\\";

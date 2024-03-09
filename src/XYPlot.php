@@ -2,8 +2,6 @@
 
 namespace gaswelder\plot;
 
-require '/home/gas/code/pub/php-canvas/src/canvas.php';
-
 use \gaswelder\Canvas;
 
 define('LABEL_FONT_SIZE', 10);
