@@ -37,9 +37,10 @@ class XYSeries extends Element
 		return $this;
 	}
 
-	function withLines()
+	function lines()
 	{
 		$this->lines = true;
+		return $this;
 	}
 
 	function render()
@@ -50,7 +51,7 @@ class XYSeries extends Element
 		if ($this->lines) {
 			$n = count($this->points);
 			for ($i = 0; $i < $n - 1; $i++) {
-				$elements[] = ['line', [$this->points[$i], $this->points[$i + 1]]];
+				$elements[] = new Line([$this->points[$i], $this->points[$i + 1]]);
 			}
 		}
 
