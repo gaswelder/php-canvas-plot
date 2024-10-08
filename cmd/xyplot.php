@@ -9,7 +9,6 @@ function get_data($text)
     // Assuming the input is two columns: x y.
     $table = [];
     $lines = array_filter(array_map('trim', explode("\n", $text)));
-    sort($lines);
     foreach ($lines as $line) {
         if ($line[0] == "#") {
             continue;
