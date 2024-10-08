@@ -29,6 +29,18 @@ class Coordinate
         if (is_numeric($s)) {
             return new Coordinate("num", $s);
         }
+        // 0:12.5
+        // 0:12
+        if (preg_match('/^(\d+):(\d+)\.(\d)$/', $s, $m)) {
+            $min = $m[1];
+            $sec = $m[2] + $m[3] / 10;
+            return new Coordinate("num", 60 * $min + $sec);
+        }
+        if (preg_match('/^(\d+):(\d+)$/', $s, $m)) {
+            $min = $m[1];
+            $sec = $m[2];
+            return new Coordinate("num", 60 * $min + $sec);
+        }
         $n = strtotime($s);
         if (!$n) {
             throw new Exception("failed to parse value: $s");
