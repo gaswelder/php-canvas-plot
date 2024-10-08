@@ -16,6 +16,13 @@ function get_data($text)
         }
         $table[] = preg_split('/\s+/', $line);
     }
+
+    // If this is a single series after all, add index as x.
+    if (count($table[0]) == 1) {
+        foreach ($table as $i => $row) {
+            $table[$i] = [$i, $row[0]];
+        }
+    }
     return [$table];
 }
 
