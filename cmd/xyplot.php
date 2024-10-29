@@ -25,6 +25,28 @@ function get_data($text)
     return [$table];
 }
 
+function fail($msg)
+{
+    fprintf(STDERR, $msg . "\n");
+    exit(1);
+}
+
+array_shift($argv);
+$title = null;
+while (count($argv) > 0) {
+    $x = array_shift($argv);
+    switch ($x) {
+        case "-t": {
+                $title = array_shift($argv);
+                if ($title === null) {
+                    fail("-t flag expects an argument");
+                }
+            }
+        default:
+            fail("unknown argument: $x");
+    }
+}
+
 $blueyellow = ["#115f9a", "#1984c5", "#22a7f0", "#48b5c4", "#76c68f", "#a6d75b", "#c9e52f", "#d0ee11", "#d0f400"];
 $orangepurple = ["#ffb400", "#d2980d", "#a57c1b", "#786028", "#363445", "#48446e", "#5e569b", "#776bcd", "#9080ff"];
 $series = [];
@@ -39,9 +61,12 @@ foreach (get_data($text) as $i => $xy) {
     $series[] = F::XYSeries($xy)->color($color)->lines();
 }
 
-$png = F::XYPlot(...$series)->grid()->render();
+$plot = F::XYPlot(...$series)->grid();
+if ($title !== null) {
+    $plot->title($title);
+}
 
-$title = time();
-$path = "$title.png";
-file_put_contents($path, $png);
+$name = time();
+$path = "$name.png";
+file_put_contents($path, $plot->render());
 echo "written $path\n";
