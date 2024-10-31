@@ -69,4 +69,4 @@ if ($title !== null) {
 $name = time();
 $path = "$name.png";
 file_put_contents($path, $plot->render());
-echo "written $path\n";
+echo "$path\n";
