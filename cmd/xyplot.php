@@ -6,7 +6,6 @@ use gaswelder\plot\F;
 
 function get_data($text)
 {
-    // Assuming the input is two columns: x y.
     $table = [];
     $lines = array_filter(array_map('trim', explode("\n", $text)));
     foreach ($lines as $line) {
@@ -16,13 +15,26 @@ function get_data($text)
         $table[] = preg_split('/\s+/', $line);
     }
 
-    // If this is a single series after all, add index as x.
-    if (count($table[0]) == 1) {
+    $single = count($table[0]) == 1;
+
+    $series = [];
+    if ($single) {
         foreach ($table as $i => $row) {
-            $table[$i] = [$i, $row[0]];
+            $x = $i;
+            foreach ($row as $j => $col) {
+                $series[$j][] = [$x, $col];
+            }
+        }
+    } else {
+        foreach ($table as $row) {
+            $x = $row[0];
+            for ($j = 1; $j < count($row); $j++) {
+                $series[$j - 1][] = [$x, $row[$j]];
+            }
         }
     }
-    return [$table];
+
+    return $series;
 }
 
 function fail($msg)
