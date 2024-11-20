@@ -45,6 +45,9 @@ function fail($msg)
 
 array_shift($argv);
 $title = null;
+$ytitle = null;
+$xtitle = null;
+
 while (count($argv) > 0) {
     $x = array_shift($argv);
     switch ($x) {
@@ -53,7 +56,22 @@ while (count($argv) > 0) {
                 if ($title === null) {
                     fail("-t flag expects an argument");
                 }
+                break;
             }
+        case "-x": {
+            $xtitle = array_shift($argv);
+            if ($xtitle === null) {
+                fail("-x flag expects an argument");
+            }
+            break;
+        }
+        case "-y": {
+            $ytitle = array_shift($argv);
+            if ($ytitle === null) {
+                fail("-y flag expects an argument");
+            }
+            break;
+        }
         default:
             fail("unknown argument: $x");
     }
@@ -76,6 +94,12 @@ foreach (get_data($text) as $i => $xy) {
 $plot = F::XYPlot(...$series)->grid();
 if ($title !== null) {
     $plot->title($title);
+}
+if ($xtitle !== null) {
+    $plot->xtitle($xtitle);
+}
+if ($ytitle !== null) {
+    $plot->ytitle($ytitle);
 }
 
 $name = time();
