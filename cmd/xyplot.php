@@ -48,32 +48,26 @@ $title = null;
 $ytitle = null;
 $xtitle = null;
 
+$flags = [
+    '-t' => ['val' => &$title, 'desc' => 'plot title'],
+    '-x' => ['val' => &$xtitle, 'desc' => 'x title'],
+    '-y' => ['val' => &$ytitle, 'desc' => 'y title'],
+];
+
 while (count($argv) > 0) {
     $x = array_shift($argv);
-    switch ($x) {
-        case "-t": {
-                $title = array_shift($argv);
-                if ($title === null) {
-                    fail("-t flag expects an argument");
-                }
-                break;
-            }
-        case "-x": {
-            $xtitle = array_shift($argv);
-            if ($xtitle === null) {
-                fail("-x flag expects an argument");
-            }
-            break;
+    $spec = $flags[$x] ?? null;
+    if (!$spec) {
+        fail("unknown argument: $x");
+    }
+    if (array_key_exists('val', $spec)) {
+        $val = array_shift($argv);
+        if ($val === null) {
+            fail("$x flag expects an argument");
         }
-        case "-y": {
-            $ytitle = array_shift($argv);
-            if ($ytitle === null) {
-                fail("-y flag expects an argument");
-            }
-            break;
-        }
-        default:
-            fail("unknown argument: $x");
+        $spec['val'] = $val;
+    } else {
+        $spec['f'];
     }
 }
 
