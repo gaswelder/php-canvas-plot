@@ -37,12 +37,6 @@ function get_data($text)
     return $series;
 }
 
-function fail($msg)
-{
-    fprintf(STDERR, $msg . "\n");
-    exit(1);
-}
-
 array_shift($argv);
 $title = null;
 $ytitle = null;
@@ -53,11 +47,29 @@ $flags = [
     '-t' => ['val' => &$title, 'desc' => 'plot title'],
     '-x' => ['val' => &$xtitle, 'desc' => 'x title'],
     '-y' => ['val' => &$ytitle, 'desc' => 'y title'],
-    '-o' => ['val' => &$filepath, 'desc' => 'output file path; if omitted, a random path will be generated and printed to terminal']
+    '-o' => ['val' => &$filepath, 'desc' => 'output file path; if omitted, a random path will be generated and printed']
 ];
+
+function fail($msg)
+{
+    fprintf(STDERR, $msg . "\n");
+    exit(1);
+}
+
+function usage()
+{
+    global $flags;
+    foreach ($flags as $k => $v) {
+        echo "\t", $k, "\t", $v['desc'], "\n";
+    }
+}
 
 while (count($argv) > 0) {
     $x = array_shift($argv);
+    if ($x == '-h') {
+        usage();
+        exit(1);
+    }
     $spec = $flags[$x] ?? null;
     if (!$spec) {
         fail("unknown argument: $x");
