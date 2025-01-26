@@ -47,11 +47,13 @@ array_shift($argv);
 $title = null;
 $ytitle = null;
 $xtitle = null;
+$filepath = null;
 
 $flags = [
     '-t' => ['val' => &$title, 'desc' => 'plot title'],
     '-x' => ['val' => &$xtitle, 'desc' => 'x title'],
     '-y' => ['val' => &$ytitle, 'desc' => 'y title'],
+    '-o' => ['val' => &$filepath, 'desc' => 'output file path; if omitted, a random path will be generated and printed to terminal']
 ];
 
 while (count($argv) > 0) {
@@ -96,7 +98,12 @@ if ($ytitle !== null) {
     $plot->ytitle($ytitle);
 }
 
-$name = time();
-$path = "$name.png";
-file_put_contents($path, $plot->render());
-echo "$path\n";
+$printpath = false;
+if (!$filepath) {
+    $filepath = time() . ".png";
+    $printpath = true;
+}
+file_put_contents($filepath, $plot->render());
+if ($printpath) {
+    echo "$filepath\n";
+}
