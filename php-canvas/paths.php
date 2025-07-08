@@ -108,11 +108,15 @@ trait Paths
 
 	private function line($a, $b, $color)
 	{
-		$r = imageline($this->img, $a[0], $a[1], $b[0], $b[1], $color);
+		$x1 = intval($a[0]);
+		$y1 = intval($a[1]);
+		$x2 = intval($b[0]);
+		$y2 = intval($b[1]);
+		$r = imageline($this->img, $x1, $y1, $x2, $y2, $color);
 		$this->check($r, 'imageline');
 		return;
 		if (empty($this->dash)) {
-			$r = imageline($this->img, $a[0], $a[1], $b[0], $b[1], $color);
+			$r = imageline($this->img, $x1, $y1, $x2, $y2, $color);
 			$this->check($r, 'imageline');
 			return;
 		}
