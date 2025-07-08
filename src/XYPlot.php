@@ -60,9 +60,12 @@ class XYPlot
 		return $this;
 	}
 
-	function render()
+	function render(int $width, int $height)
 	{
-		return render($this->dataSources, $this->settings);
+		$s = $this->settings;
+		$s['width'] = $width;
+		$s['height'] = $height;
+		return render($this->dataSources, $s);
 	}
 }
 

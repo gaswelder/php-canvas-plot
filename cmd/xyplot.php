@@ -42,12 +42,14 @@ $title = null;
 $ytitle = null;
 $xtitle = null;
 $filepath = null;
+$size = "600x340";
 
 $flags = [
     '-t' => ['val' => &$title, 'desc' => 'plot title'],
     '-x' => ['val' => &$xtitle, 'desc' => 'x title'],
     '-y' => ['val' => &$ytitle, 'desc' => 'y title'],
-    '-o' => ['val' => &$filepath, 'desc' => 'output file path; if omitted, a random path will be generated and printed']
+    '-o' => ['val' => &$filepath, 'desc' => 'output file; if omitted, a random path will be generated and printed'],
+    '-s' => ['val' => &$size, 'desc' => 'image size (600x340)']
 ];
 
 function fail($msg)
@@ -115,7 +117,10 @@ if (!$filepath) {
     $filepath = time() . ".png";
     $printpath = true;
 }
-file_put_contents($filepath, $plot->render());
+
+[$w, $h] = array_map('intval', explode('x', $size, 2));
+
+file_put_contents($filepath, $plot->render($w, $h));
 if ($printpath) {
     echo "$filepath\n";
 }
