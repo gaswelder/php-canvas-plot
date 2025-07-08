@@ -9,7 +9,7 @@ function get_data($text)
     $table = [];
     $lines = array_filter(array_map('trim', explode("\n", $text)));
     foreach ($lines as $line) {
-        if ($line[0] == "#") {
+        if ($line[0] == "#" || trim($line) == "") {
             continue;
         }
         $table[] = preg_split('/\s+/', $line);
