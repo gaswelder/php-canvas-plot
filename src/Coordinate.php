@@ -4,11 +4,11 @@ namespace gaswelder\plot;
 
 class Coordinate
 {
-    private $type;
+    public $type;
     public $num;
     public $label;
 
-    private function __construct($type, $num)
+    function __construct(string $type, int|float $num)
     {
         $this->type = $type;
         $this->num = $num;
@@ -18,6 +18,22 @@ class Coordinate
                 break;
             default:
                 $this->label = "$num";
+        }
+    }
+
+    /**
+     * Returns the difference $a - $b.
+     */
+    static function diff(Coordinate $a, Coordinate $b): Coordinate
+    {
+        if ($a->type != $b->type) {
+            throw new Exception("Coordinate types mismatch");
+        }
+        switch ($a->type) {
+            case 'num':
+                return new Coordinate('num', $a->num - $b->num);
+            default:
+                throw new Exception("unimplemented: $a->type");
         }
     }
 

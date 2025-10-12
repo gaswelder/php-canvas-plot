@@ -33,8 +33,23 @@ class Ticker
 		$a = $va->num;
 		$b = $vb->num;
 		if ($a > $b) {
-			return self::chooseBounds($b, $a);
+			return self::chooseBounds($vb, $va);
 		}
+
+		$nice = true;
+		if ($nice) {
+			$n = 5;
+			$raw_step = ($b - $a) / ($n - 1);
+			$nice_step = nice_number($raw_step);
+			$nice_min = floor($a / $nice_step) * $nice_step;
+			$nice_max = ceil($b / $nice_step) * $nice_step;
+			return [
+				new Coordinate($va->type, $nice_min),
+				new Coordinate($vb->type, $nice_max + 0.5 * $nice_step),
+				$nice_step
+			];
+		}
+
 
 		// Look at the largest exponent that's different between the two values.
 		$exponent = $vb->maxExponent();
@@ -64,4 +79,21 @@ class Ticker
 
 		return [$left, $right, $step];
 	}
+}
+
+
+function nice_number($x)
+{
+	$e = floor(log10($x));
+	$f = $x / pow(10, $e);
+	if ($f < 1.5) {
+		$nf = 1;
+	} else if ($f < 3) {
+		$nf = 2;
+	} else if ($f < 7) {
+		$nf = 5;
+	} else {
+		$nf = 10;
+	}
+	return $nf * pow(10, $e);
 }
