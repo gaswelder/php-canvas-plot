@@ -181,7 +181,7 @@ function render(array $dataSources, $settings0)
 		$canvas->textBaseline = 'bottom';
 		$canvas->textAlign = 'center';
 		$canvas->fillText($settings['xtitle'], $x, $y);
-		$area->claimSpace('bottom', LABEL_FONT_SIZE);
+		$area->claimSpace('bottom', LABEL_FONT_SIZE + 10);
 	}
 
 	if ($settings['ytitle']) {
@@ -191,7 +191,7 @@ function render(array $dataSources, $settings0)
 		$canvas->textBaseline = 'top';
 		$canvas->fillText($settings['ytitle'], -$y, $x);
 		$canvas->rotate(deg2rad(90));
-		$area->claimSpace('left', LABEL_FONT_SIZE);
+		$area->claimSpace('left', LABEL_FONT_SIZE + 10);
 	}
 
 	$drawAxisLabels = true;
