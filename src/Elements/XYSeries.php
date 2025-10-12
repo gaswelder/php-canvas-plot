@@ -37,6 +37,9 @@ class XYSeries extends Element
 		return $this;
 	}
 
+	/**
+	 * Turns on the drawing of lines between the successive points.
+	 */
 	function lines()
 	{
 		$this->lines = true;

@@ -43,13 +43,15 @@ $ytitle = null;
 $xtitle = null;
 $filepath = null;
 $size = "600x340";
+$linewidth = 1;
 
 $flags = [
     '-t' => ['val' => &$title, 'desc' => 'plot title'],
     '-x' => ['val' => &$xtitle, 'desc' => 'x title'],
     '-y' => ['val' => &$ytitle, 'desc' => 'y title'],
     '-o' => ['val' => &$filepath, 'desc' => 'output file; if omitted, a random path will be generated and printed'],
-    '-s' => ['val' => &$size, 'desc' => 'image size (600x340)']
+    '-s' => ['val' => &$size, 'desc' => 'image size (600x340)'],
+    '-l' => ['val' => &$linewidth, 'desc' => 'line width (only 0 or 1 is supported)'],
 ];
 
 function fail($msg)
@@ -98,7 +100,11 @@ foreach (get_data($text) as $i => $xy) {
     $color = $i % 2 ?
         $orangepurple[(($i - 1) / 2) % count($orangepurple)] :
         $blueyellow[($i / 2) % count($blueyellow)];
-    $series[] = F::XYSeries($xy)->color($color)->lines();
+    $xy = F::XYSeries($xy)->color($color);
+    if ($linewidth) {
+        $xy->lines();
+    }
+    $series[] = $xy;
 }
 
 $plot = F::XYPlot(...$series)->grid();
