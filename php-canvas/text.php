@@ -66,7 +66,7 @@ trait Text
 		list($x, $y) = $this->calc($x, $y);
 		list($fontSize, $fontFile) = $this->getFont();
 		$color = $this->getColor($this->fillStyle);
-		$r = imagettftext($this->img, $fontSize, $angle, $x, $y, $color, $fontFile, $text);
+		$r = imagettftext($this->img, $fontSize, $angle, (int) $x, (int) $y, $color, $fontFile, $text);
 		$this->check($r, 'imagettftext');
 		return $r;
 	}

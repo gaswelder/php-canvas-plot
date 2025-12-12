@@ -92,7 +92,7 @@ trait Paths
 	private function polyFill($points)
 	{
 		$flatCoords = call_user_func_array('array_merge', $points);
-		$r = imagefilledpolygon($this->img, $flatCoords, count($points), $this->getColor($this->fillStyle));
+		$r = imagefilledpolygon($this->img, $flatCoords, $this->getColor($this->fillStyle));
 		$this->check($r, 'imagefilledpolygon');
 	}
 
