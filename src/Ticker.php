@@ -45,11 +45,10 @@ class Ticker
 			$nice_max = ceil($b / $nice_step) * $nice_step;
 			return [
 				new Coordinate($va->type, $nice_min),
-				new Coordinate($vb->type, $nice_max + 0.5 * $nice_step),
+				new Coordinate($vb->type, $nice_max),
 				$nice_step
 			];
 		}
-
 
 		// Look at the largest exponent that's different between the two values.
 		$exponent = $vb->maxExponent();
