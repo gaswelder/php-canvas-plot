@@ -4,37 +4,74 @@ require_once __DIR__ . "/../src/init.php";
 
 use gaswelder\plot\F;
 
-function get_data($text)
+function parse_table($text)
 {
-    $table = [];
-    $lines = array_filter(array_map('trim', explode("\n", $text)));
-    foreach ($lines as $line) {
-        if ($line[0] == "#" || trim($line) == "") {
+    $rows = [];
+    $n = 0;
+    foreach (explode("\n", $text) as $line) {
+        $line = trim($line);
+        if ($line == "" || $line[0] == "#") {
             continue;
         }
-        $table[] = preg_split('/\s+/', $line);
+        $cols = preg_split('/\s+/', $line);
+        if ($n > 0 && count($cols) != count($rows[$n - 1])) {
+            throw new Exception("Inconsistent columns number");
+        }
+        $rows[] = $cols;
+        $n++;
     }
+    return $rows;
+}
 
-    $single = count($table[0]) == 1;
+function get_series()
+{
+    $text = stream_get_contents(STDIN);
+    $rows = parse_table($text);
 
-    $series = [];
-    if ($single) {
-        foreach ($table as $i => $row) {
+    $subtables = [];
+    if (count($rows[0]) == 1) {
+        foreach ($rows as $i => $row) {
             $x = $i;
             foreach ($row as $j => $col) {
-                $series[$j][] = [$x, $col];
+                $subtables[$j][] = [$x, $col];
             }
         }
     } else {
-        foreach ($table as $row) {
+        foreach ($rows as $row) {
             $x = $row[0];
             for ($j = 1; $j < count($row); $j++) {
-                $series[$j - 1][] = [$x, $row[$j]];
+                $subtables[$j - 1][] = [$x, $row[$j]];
             }
         }
     }
 
+    $blueyellow = ["#115f9a", "#1984c5", "#22a7f0", "#48b5c4", "#76c68f", "#a6d75b", "#c9e52f", "#d0ee11", "#d0f400"];
+    $orangepurple = ["#ffb400", "#d2980d", "#a57c1b", "#786028", "#363445", "#48446e", "#5e569b", "#776bcd", "#9080ff"];
+    $series = [];
+
+    foreach ($subtables as $i => $xy) {
+        // even numbers iterate through the first palette
+        // odd numbers iterate through the second palette
+        $color = $i % 2 ?
+            $orangepurple[(($i - 1) / 2) % count($orangepurple)] :
+            $blueyellow[($i / 2) % count($blueyellow)];
+        $xy = F::XYSeries($xy)->color($color);
+        $series[] = $xy;
+    }
     return $series;
+}
+
+function fail($msg)
+{
+    fprintf(STDERR, $msg . "\n");
+    exit(1);
+}
+
+function usage($flags)
+{
+    foreach ($flags as $k => $v) {
+        echo "\t", $k, "\t", $v['desc'], "\n";
+    }
 }
 
 array_shift($argv);
@@ -54,24 +91,10 @@ $flags = [
     '-l' => ['val' => &$linewidth, 'desc' => 'line width (only 0 or 1 is supported)'],
 ];
 
-function fail($msg)
-{
-    fprintf(STDERR, $msg . "\n");
-    exit(1);
-}
-
-function usage()
-{
-    global $flags;
-    foreach ($flags as $k => $v) {
-        echo "\t", $k, "\t", $v['desc'], "\n";
-    }
-}
-
 while (count($argv) > 0) {
     $x = array_shift($argv);
     if ($x == '-h') {
-        usage();
+        usage($flags);
         exit(1);
     }
     $spec = $flags[$x] ?? null;
@@ -89,24 +112,12 @@ while (count($argv) > 0) {
     }
 }
 
-$blueyellow = ["#115f9a", "#1984c5", "#22a7f0", "#48b5c4", "#76c68f", "#a6d75b", "#c9e52f", "#d0ee11", "#d0f400"];
-$orangepurple = ["#ffb400", "#d2980d", "#a57c1b", "#786028", "#363445", "#48446e", "#5e569b", "#776bcd", "#9080ff"];
-$series = [];
-$text = stream_get_contents(STDIN);
-
-foreach (get_data($text) as $i => $xy) {
-    // even numbers iterate through the first palette
-    // odd numbers iterate through the second palette
-    $color = $i % 2 ?
-        $orangepurple[(($i - 1) / 2) % count($orangepurple)] :
-        $blueyellow[($i / 2) % count($blueyellow)];
-    $xy = F::XYSeries($xy)->color($color);
-    if ($linewidth) {
+$series = get_series();
+if ($linewidth) {
+    foreach ($series as $xy) {
         $xy->lines();
     }
-    $series[] = $xy;
 }
-
 $plot = F::XYPlot(...$series)->grid();
 if ($title !== null) {
     $plot->title($title);
