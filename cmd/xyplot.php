@@ -80,7 +80,7 @@ $ytitle = null;
 $xtitle = null;
 $filepath = null;
 $size = "600x340";
-$linewidth = 1;
+$linewidth = 0;
 
 $flags = [
     '-t' => ['val' => &$title, 'desc' => 'plot title'],
